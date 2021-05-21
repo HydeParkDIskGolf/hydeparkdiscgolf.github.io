@@ -1,65 +1,104 @@
-# GitHub Payment Pages with Stripe Checkout
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Stripe Checkout Sample</title>
+    <meta name="description" content="A demo of Stripe client-only Checkout" />
 
-This is an example of a client-only (server-free) donation payment page that can be hosted on GitHub using Stripe Checkout.
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/global.css" />
+    <!-- Load Stripe.js on your website. -->
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
 
-You can see this repository running on [GitHub Pages](https://pages.github.com/) here: https://stripe-samples.github.io/github-pages-stripe-checkout
-<img src="./demo.gif" alt="A gif of the Checkout payment page rendering" align="center">
+  <body>
+    <div class="sr-root">
+      <div class="sr-main" style="display: flex;">
+        <header class="sr-header">
+          <div class="sr-header__logo"></div>
+        </header>
+        <div class="sr-container">
+          <section class="container">
+            <h1>One-time Donation</h1>
+            <button
+              data-checkout-mode="payment"
+              data-price-id="prod_JWhZ7adQ5c3tRT"
+            >
+              Donate $5.00 once
+            </button>
+            <button
+              data-checkout-mode="payment"
+              data-price-id="prod_JWhaEENPkc2XYl"
+            >
+              Donate $10.00 once
+            </button>
+            <button
+              data-checkout-mode="payment"
+              data-price-id="prod_JWha0WRHMr0W6c"
+            >
+              Donate $20.00 once
+            </button>
+          </section>
+        </div>
+        <div id="error-message"></div>
+      </div>
+    </div>
+    <div class="banner">
+      <span>
+        This is a
+        <a href="https://github.com/stripe-samples"> Stripe Sample </a> on how
+        to use Stripe Checkout on GitHub Pages.
+        <a
+          href="https://github.com/stripe-samples/github-pages-stripe-checkout"
+        >
+          View code on GitHub.
+        </a>
+      </span>
+    </div>
 
-## Setup
+    <script>
+      // Replace with your own publishable key: https://dashboard.stripe.com/test/apikeys
+      var PUBLISHABLE_KEY = 'pk_test_51IkEGzDAOLoojIDcoovPIyPvfgoJjyo19WFfEU2J2YnnHXUXeqheC0BjxLcxBsC7ZmPTV6j9ehPwNNMi7c6ejVKX00wAX56Q9A';
+      // Replace with the domain you want your users to be redirected back to after payment
+      var DOMAIN = location.href.replace(/[^/]*$/, '');
 
-- Create Stripe Account: https://dashboard.stripe.com/register
-- Enable client-only checkout: https://dashboard.stripe.com/account/checkout/settings
-- Create a one-time or recurring product in the Stripe Dashboard: https://dashboard.stripe.com/products
-  - After creation click the "Use with checkout" button and copy the price ID
-  - Paste the IDs into the button `data-price-id` attributes.
-- Copy your publishable key from: https://dashboard.stripe.com/apikeys and set it as the value for `PUBLISHABLE_KEY` in the index.html file
+      if (PUBLISHABLE_KEY === 'pk_test_51IkEGzDAOLoojIDcoovPIyPvfgoJjyo19WFfEU2J2YnnHXUXeqheC0BjxLcxBsC7ZmPTV6j9ehPwNNMi7c6ejVKX00wAX56Q9A') {
+        console.log(
+          'Replace the hardcoded publishable key with your own publishable key: https://dashboard.stripe.com/test/apikeys'
+        );
+      }
 
-## Run locally
+      var stripe = Stripe(PUBLISHABLE_KEY);
 
-Since these are all static assets you can serve them locally with a simple web server, e.g.
+      // Handle any errors from Checkout
+      var handleResult = function (result) {
+        if (result.error) {
+          var displayError = document.getElementById('error-message');
+          displayError.textContent = result.error.message;
+        }
+      };
 
-Python 2
+      document.querySelectorAll('button').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+          var mode = e.target.dataset.checkoutMode;
+          var priceId = e.target.dataset.priceId;
+          var items = [{ price: priceId, quantity: 1 }];
 
-    python -m SimpleHTTPServer 8888
-
-Python 3
-
-    python -m http.server 8888
-
-You can now view your page at http://localhost:8888
-
-If you're getting an error running this command, see more detailed insturctions on [MDN](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server).
-
-## Go live
-
-- Add `username.github.io` (replace username with your github user name) to the domain whitelist in https://dashboard.stripe.com/account/checkout/settings
-- Replace the test publishable key `PUBLISHABLE_KEY` in the index.html file with your pk\*live_xxx key which can be found here: https://dashboard.stripe.com/test/apikeys (!!!**NOTE**!!!: never paste in your secret key! For client-only Checkout only the publishable key is needed!)
-- Commit the changes to the `gh-pages` branch and push them to GitHub.
-- Done, you can now accept live payments on your GitHub pages \o/
-
-## More Checkout Samples
-
-- [checkout-one-time-payments](https://github.com/stripe-samples/checkout-one-time-payments)
-- [checkout-single-subscription](https://github.com/stripe-samples/checkout-single-subscription)
-
-## FAQ
-
-Q: Why did you pick these frameworks?
-
-A: We chose the most minimal framework to convey the key Stripe calls and concepts you need to understand. These demos are meant as an educational tool that helps you roadmap how to integrate Stripe within your own system independent of the framework.
-
-## Get support
-If you found a bug or want to suggest a new [feature/use case/sample], please [file an issue](../../issues).
-
-If you have questions, comments, or need help with code, we're here to help:
-- on [IRC via freenode](https://webchat.freenode.net/?channel=#stripe)
-- on Twitter at [@StripeDev](https://twitter.com/StripeDev)
-- on Stack Overflow at the [stripe-payments](https://stackoverflow.com/tags/stripe-payments/info) tag
-- by [email](mailto:support+github@stripe.com)
-
-Sign up to [stay updated with developer news](https://go.stripe.global/dev-digest).
-
-## Author(s)
-
-- [@adreyfus-stripe](https://twitter.com/adrind)
-- [@thorsten-stripe](https://twitter.com/thorwebdev)
+          // Make the call to Stripe.js to redirect to the checkout page
+          // with the sku or plan ID.
+          stripe
+            .redirectToCheckout({
+              mode: mode,
+              lineItems: items,
+              successUrl:
+                DOMAIN + 'success.html?session_id={CHECKOUT_SESSION_ID}',
+              cancelUrl:
+                DOMAIN + 'canceled.html?session_id={CHECKOUT_SESSION_ID}',
+            })
+            .then(handleResult);
+        });
+      });
+    </script>
+  </body>
+</html>
