@@ -44,19 +44,7 @@
         <div id="error-message"></div>
       </div>
     </div>
-    <div class="banner">
-      <span>
-        This is a
-        <a href="https://github.com/stripe-samples"> Stripe Sample </a> on how
-        to use Stripe Checkout on GitHub Pages.
-        <a
-          href="https://github.com/stripe-samples/github-pages-stripe-checkout"
-        >
-          View code on GitHub.
-        </a>
-      </span>
-    </div>
-
+   
     <script>
       // Replace with your own publishable key: https://dashboard.stripe.com/test/apikeys
       var PUBLISHABLE_KEY = 'pk_test_51IkEGzDAOLoojIDcoovPIyPvfgoJjyo19WFfEU2J2YnnHXUXeqheC0BjxLcxBsC7ZmPTV6j9ehPwNNMi7c6ejVKX00wAX56Q9A';
